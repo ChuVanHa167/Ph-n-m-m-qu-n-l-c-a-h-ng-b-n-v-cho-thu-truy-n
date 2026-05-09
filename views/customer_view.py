@@ -1,69 +1,78 @@
+import tkinter as tk
+from tkinter import ttk, messagebox
+
+from controllers.customer_controller import CustomerController
+
+
 class CustomerView:
 
-    # =========================
-    # INPUT
-    # =========================
+    def __init__(self):
+
+        self.controller = CustomerController(self)
+
+        self.window = tk.Toplevel()
+        self.window.title("👤 KHÁCH HÀNG")
+        self.window.geometry("900x500")
+
+        self.build_ui()
+        self.controller.show_customers()
+
+    def build_ui(self):
+
+        tk.Label(self.window, text="QUẢN LÝ KHÁCH HÀNG",
+                 font=("Arial", 16, "bold")).pack(pady=10)
+
+        form = tk.Frame(self.window)
+        form.pack()
+
+        labels = ["Tên", "SĐT"]
+        self.entries = []
+
+        for i, text in enumerate(labels):
+            tk.Label(form, text=text).grid(row=0, column=i)
+            e = tk.Entry(form)
+            e.grid(row=1, column=i, padx=5)
+            self.entries.append(e)
+
+        tk.Button(
+            self.window,
+            text="➕ Thêm khách",
+            command=self.controller.add_customer
+        ).pack(pady=5)
+
+        self.table = ttk.Treeview(
+            self.window,
+            columns=("id", "name", "phone"),
+            show="headings"
+        )
+
+        self.table.heading("id", text="ID")
+        self.table.heading("name", text="Tên")
+        self.table.heading("phone", text="SĐT")
+
+        self.table.pack(fill="both", expand=True)
+
     def input_customer(self):
 
-        customer_id = input("ID khách: ")
-
-        name = input("Tên khách: ")
-
-        phone = input("SĐT: ")
-
-        email = input("Email: ")
-
-        address = input("Địa chỉ: ")
-
         return (
-            customer_id,
-            name,
-            phone,
-            email,
-            address
+            "CUST_" + self.entries[0].get(),
+            self.entries[0].get(),
+            self.entries[1].get(),
+            "",
+            ""
         )
 
-    # =========================
-    # DISPLAY
-    # =========================
-    def display_customers(
-        self,
-        customers
-    ):
+    def display_customers(self, customers):
 
-        if not customers:
+        self.table.delete(*self.table.get_children())
 
-            print("Không có khách hàng.")
+        for c in customers:
+            self.table.insert("", "end", values=(
+                c.customer_id,
+                c.name,
+                c.phone
+            ))
 
-            return
-
-        for customer in customers:
-
-            print(customer)
-
-            print("-" * 40)
-
-    # =========================
-    # DELETE
-    # =========================
-    def input_delete_id(self):
-
-        return input(
-            "Nhập ID khách cần xóa: "
-        )
-
-    # =========================
-    # SEARCH
-    # =========================
-    def input_search_keyword(self):
-
-        return input(
-            "Nhập tên khách hàng: "
-        )
-
-    # =========================
-    # MESSAGE
-    # =========================
-    def show_message(self, message):
-
-        print(message)
+    def show_message(self, msg):
+        messagebox.showinfo("OK", msg)
+        self.controller.show_customers()

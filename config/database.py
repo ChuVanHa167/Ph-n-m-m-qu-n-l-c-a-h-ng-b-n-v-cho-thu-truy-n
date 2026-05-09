@@ -22,7 +22,7 @@ class Database:
             cls._instance.connection.row_factory = (
                 sqlite3.Row
             )
-
+            cls._instance.connection.execute("PRAGMA foreign_keys = ON")
             cls._instance.cursor = (
                 cls._instance.connection.cursor()
             )
@@ -98,16 +98,13 @@ class Database:
 
                 return_date TIMESTAMP,
 
-                status TEXT DEFAULT 'ĐANG_THUE'
-                CHECK(status IN ('ĐANG_THUE', 'DA_TRA'))
+                status TEXT DEFAULT 'ĐANG_THUE',
 
                 total_price REAL,
 
-                FOREIGN KEY (customer_id)
-                    REFERENCES customers(customer_id),
+                FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
 
-                FOREIGN KEY (comic_id)
-                    REFERENCES comics(comic_id)
+                FOREIGN KEY (comic_id) REFERENCES comics(comic_id)
             )
         """)
 
@@ -128,16 +125,10 @@ class Database:
                 total_price REAL NOT NULL,
 
                 sale_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-               
-                payment_method TEXT DEFAULT 'CASH'
-                
-                payment_status TEXT DEFAULT 'PAID'
-                
-                FOREIGN KEY (customer_id)
-                    REFERENCES customers(customer_id),
 
-                FOREIGN KEY (comic_id)
-                    REFERENCES comics(comic_id)
+                FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
+
+                FOREIGN KEY (comic_id) REFERENCES comics(comic_id)
             )
         """)
 

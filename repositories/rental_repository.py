@@ -50,7 +50,7 @@ class RentalRepository:
         query = """
             UPDATE rentals
             SET
-                status = 'Đã trả',
+                status = 'DA_TRA',
 
                 return_date =
                     CURRENT_TIMESTAMP

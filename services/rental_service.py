@@ -76,7 +76,8 @@ class RentalService:
             self.comic_repository
             .find_by_id(comic_id)
         )
-
+        if comic.quantity <= 0:
+            return "Không còn truyện trên kệ."
         if comic is None:
 
             return "Truyện không tồn tại."
@@ -127,7 +128,7 @@ class RentalService:
 
             return "Không tìm thấy phiếu thuê."
 
-        if rental.status == "Đã trả":
+        if rental.status == "DA_TRA":
 
             return "Truyện đã trả rồi."
 

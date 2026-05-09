@@ -1,57 +1,42 @@
+import tkinter as tk
+from tkinter import messagebox
+
+from controllers.rental_controller import RentalController
+
+
 class RentalView:
 
-    # =========================
-    # INPUT RENT
-    # =========================
+    def __init__(self):
+
+        self.controller = RentalController(self)
+
+        self.window = tk.Toplevel()
+        self.window.title("📖 THUÊ TRUYỆN")
+        self.window.geometry("400x250")
+
+        tk.Label(self.window, text="THUÊ TRUYỆN",
+                 font=("Arial", 14, "bold")).pack(pady=10)
+
+        tk.Label(self.window, text="ID khách").pack()
+        self.customer = tk.Entry(self.window)
+        self.customer.pack()
+
+        tk.Label(self.window, text="ID truyện").pack()
+        self.comic = tk.Entry(self.window)
+        self.comic.pack()
+
+        tk.Button(
+            self.window,
+            text="Thuê",
+            width=20,
+            command=self.controller.rent_comic
+        ).pack(pady=10)
+
     def input_rental(self):
-
-        customer_id = input(
-            "ID khách hàng: "
-        )
-
-        comic_id = input(
-            "ID truyện: "
-        )
-
         return (
-            customer_id,
-            comic_id
+            self.customer.get(),
+            self.comic.get()
         )
 
-    # =========================
-    # INPUT RETURN
-    # =========================
-    def input_return(self):
-
-        return input(
-            "Nhập Rental ID: "
-        )
-
-    # =========================
-    # DISPLAY
-    # =========================
-    def display_rentals(
-        self,
-        rentals
-    ):
-
-        if not rentals:
-
-            print(
-                "Không có lịch sử thuê."
-            )
-
-            return
-
-        for rental in rentals:
-
-            print(rental)
-
-            print("-" * 40)
-
-    # =========================
-    # MESSAGE
-    # =========================
-    def show_message(self, message):
-
-        print(message)
+    def show_message(self, msg):
+        messagebox.showinfo("Thông báo", msg)

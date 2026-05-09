@@ -46,72 +46,43 @@ class SaleService:
     # =========================
     # BÁN TRUYỆN
     # =========================
-    def sell_comic(
-        self,
-        customer_id,
-        comic_id,
-        quantity
-    ):
+    def sell_comic(self, customer_id, comic_id, quantity):
 
-        # Kiểm tra khách
-        customer = (
-            self.customer_repository
-            .find_by_id(customer_id)
-        )
-
+        customer = self.customer_repository.find_by_id(customer_id)
         if customer is None:
-
             return "Khách hàng không tồn tại."
 
-        # Kiểm tra truyện
-        comic = (
-            self.comic_repository
-            .find_by_id(comic_id)
-        )
-
+        comic = self.comic_repository.find_by_id(comic_id)
         if comic is None:
-
             return "Truyện không tồn tại."
 
-        # Kiểm tra số lượng
-        if comic.quantity < quantity:
+        if quantity <= 0:
+            return "Số lượng không hợp lệ"
 
-            return (
-                "Không đủ truyện "
-                "trên kệ."
+        if comic.quantity < quantity:
+            return "Không đủ truyện trên kệ."
+
+        try:
+            total_price = comic.price * quantity
+
+            self.sale_repository.create_sale(
+                customer_id,
+                comic_id,
+                quantity,
+                total_price
             )
 
-        # Tính tiền
-        total_price = (
-            comic.price * quantity
-        )
+            comic.quantity -= quantity
+            self.comic_repository.update(comic)
 
-        # Tạo hóa đơn
-        self.sale_repository.create_sale(
-            customer_id,
-            comic_id,
-            quantity,
-            total_price
-        )
+            self.notification_service.notify(
+                f"{customer.name} đã mua {quantity} {comic.title}"
+            )
 
-        # Trừ số lượng
-        comic.quantity -= quantity
+            return f"Bán thành công. Tổng tiền: {total_price}"
 
-        self.comic_repository.update(comic)
-
-        # Notification
-        self.notification_service.notify(
-            f"{customer.name} "
-            f"đã mua "
-            f"{quantity} "
-            f"truyện "
-            f"{comic.title}"
-        )
-
-        return (
-            f"Bán truyện thành công. "
-            f"Tổng tiền: {total_price}"
-        )
+        except Exception as e:
+            return f"Lỗi giao dịch: {str(e)}"
 
     # =========================
     # LỊCH SỬ BÁN

@@ -32,7 +32,8 @@ class InventoryService:
             self.comic_repository
             .find_by_id(comic_id)
         )
-
+        if quantity <= 0:
+            return "Số lượng không hợp lệ"
         if comic is None:
             return "Không tìm thấy truyện."
 
@@ -64,12 +65,13 @@ class InventoryService:
             .find_by_id(comic_id)
         )
 
-        if comic is None:
-            return "Không tìm thấy truyện."
+        if quantity <= 0:
+            return "Số lượng không hợp lệ"
 
         if comic.stock_quantity < quantity:
-
-            return "Không đủ hàng trong kho."
+            return "Không đủ hàng trong kho"
+        if comic is None:
+            return "Không tìm thấy truyện."
 
         self.inventory_repository.export_stock(
             comic_id,
@@ -99,6 +101,8 @@ class InventoryService:
             .find_by_id(comic_id)
         )
 
+        if quantity <= 0:
+            return "Số lượng không hợp lệ"
         if comic is None:
             return "Không tìm thấy truyện."
 
