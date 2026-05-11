@@ -1,4 +1,6 @@
-from config.database import Database
+from config.database import (
+    ThreadSafeDatabase
+)
 
 from models.sale import Sale
 
@@ -7,7 +9,16 @@ class SaleRepository:
 
     def __init__(self):
 
-        self.db = Database()
+        # self.db = Database()
+        self.connection = (
+            ThreadSafeDatabase
+            .get_thread_connection()
+        )
+
+        self.cursor = (
+            ThreadSafeDatabase
+            .get_thread_cursor()
+        )
 
     # =========================
     # CREATE SALE
@@ -30,7 +41,7 @@ class SaleRepository:
             VALUES (?, ?, ?, ?)
         """
 
-        self.db.cursor.execute(
+        self.cursor.execute(
             query,
             (
                 customer_id,
@@ -40,7 +51,7 @@ class SaleRepository:
             )
         )
 
-        self.db.connection.commit()
+        self.connection.commit()
 
     # =========================
     # GET ALL SALES
@@ -52,9 +63,9 @@ class SaleRepository:
             ORDER BY sale_date DESC
         """
 
-        self.db.cursor.execute(query)
+        self.cursor.execute(query)
 
-        rows = self.db.cursor.fetchall()
+        rows = self.cursor.fetchall()
 
         sales = []
 
@@ -84,9 +95,9 @@ class SaleRepository:
             FROM sales
         """
 
-        self.db.cursor.execute(query)
+        self.cursor.execute(query)
 
-        row = self.db.cursor.fetchone()
+        row = self.cursor.fetchone()
 
         if row["revenue"] is None:
             return 0

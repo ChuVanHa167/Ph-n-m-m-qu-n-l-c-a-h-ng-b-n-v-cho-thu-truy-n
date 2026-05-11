@@ -1,4 +1,6 @@
-from config.database import Database
+from config.database import (
+    ThreadSafeDatabase
+)
 from models.customer import Customer
 
 
@@ -6,7 +8,16 @@ class CustomerRepository:
 
     def __init__(self):
 
-        self.db = Database()
+        # self.db = Database()
+        self.connection = (
+            ThreadSafeDatabase
+            .get_thread_connection()
+        )
+
+        self.cursor = (
+            ThreadSafeDatabase
+            .get_thread_cursor()
+        )
 
     # =========================
     # CREATE
@@ -24,7 +35,7 @@ class CustomerRepository:
             VALUES (?, ?, ?, ?, ?)
         """
 
-        self.db.cursor.execute(
+        self.cursor.execute(
             query,
             (
                 customer.customer_id,
@@ -35,7 +46,7 @@ class CustomerRepository:
             )
         )
 
-        self.db.connection.commit()
+        self.connection.commit()
 
     # =========================
     # READ ALL
@@ -44,9 +55,9 @@ class CustomerRepository:
 
         query = "SELECT * FROM customers"
 
-        self.db.cursor.execute(query)
+        self.cursor.execute(query)
 
-        rows = self.db.cursor.fetchall()
+        rows = self.cursor.fetchall()
 
         customers = []
 
@@ -74,12 +85,12 @@ class CustomerRepository:
             WHERE customer_id = ?
         """
 
-        self.db.cursor.execute(
+        self.cursor.execute(
             query,
             (customer_id,)
         )
 
-        row = self.db.cursor.fetchone()
+        row = self.cursor.fetchone()
 
         if row:
 
@@ -108,7 +119,7 @@ class CustomerRepository:
             WHERE customer_id = ?
         """
 
-        self.db.cursor.execute(
+        self.cursor.execute(
             query,
             (
                 customer.name,
@@ -119,7 +130,7 @@ class CustomerRepository:
             )
         )
 
-        self.db.connection.commit()
+        self.connection.commit()
 
     # =========================
     # DELETE
@@ -131,12 +142,12 @@ class CustomerRepository:
             WHERE customer_id = ?
         """
 
-        self.db.cursor.execute(
+        self.cursor.execute(
             query,
             (customer_id,)
         )
 
-        self.db.connection.commit()
+        self.connection.commit()
 
     # =========================
     # SEARCH
@@ -148,12 +159,12 @@ class CustomerRepository:
             WHERE name LIKE ?
         """
 
-        self.db.cursor.execute(
+        self.cursor.execute(
             query,
             (f"%{keyword}%",)
         )
 
-        rows = self.db.cursor.fetchall()
+        rows = self.cursor.fetchall()
 
         customers = []
 

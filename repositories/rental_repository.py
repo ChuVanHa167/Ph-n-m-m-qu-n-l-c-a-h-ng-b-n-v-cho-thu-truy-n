@@ -1,4 +1,6 @@
-from config.database import Database
+from config.database import (
+    ThreadSafeDatabase
+)
 
 from models.rental import Rental
 
@@ -7,7 +9,16 @@ class RentalRepository:
 
     def __init__(self):
 
-        self.db = Database()
+        # self.db = Database()
+        self.connection = (
+            ThreadSafeDatabase
+            .get_thread_connection()
+        )
+
+        self.cursor = (
+            ThreadSafeDatabase
+            .get_thread_cursor()
+        )
 
     # =========================
     # CREATE RENTAL
@@ -28,7 +39,7 @@ class RentalRepository:
             VALUES (?, ?, ?)
         """
 
-        self.db.cursor.execute(
+        self.cursor.execute(
             query,
             (
                 customer_id,
@@ -37,7 +48,7 @@ class RentalRepository:
             )
         )
 
-        self.db.connection.commit()
+        self.connection.commit()
 
     # =========================
     # RETURN COMIC
@@ -58,12 +69,12 @@ class RentalRepository:
             WHERE rental_id = ?
         """
 
-        self.db.cursor.execute(
+        self.cursor.execute(
             query,
             (rental_id,)
         )
 
-        self.db.connection.commit()
+        self.connection.commit()
 
     # =========================
     # GET ALL RENTALS
@@ -75,9 +86,9 @@ class RentalRepository:
             ORDER BY rental_date DESC
         """
 
-        self.db.cursor.execute(query)
+        self.cursor.execute(query)
 
-        rows = self.db.cursor.fetchall()
+        rows = self.cursor.fetchall()
 
         rentals = []
 
@@ -110,12 +121,12 @@ class RentalRepository:
             WHERE rental_id = ?
         """
 
-        self.db.cursor.execute(
+        self.cursor.execute(
             query,
             (rental_id,)
         )
 
-        row = self.db.cursor.fetchone()
+        row = self.cursor.fetchone()
 
         if row:
 

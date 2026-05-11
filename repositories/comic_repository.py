@@ -1,4 +1,6 @@
-from config.database import Database
+from config.database import (
+    ThreadSafeDatabase
+)
 from models.comic import Comic
 
 
@@ -6,7 +8,16 @@ class ComicRepository:
 
     def __init__(self):
 
-        self.db = Database()
+        # self.db = Database()
+        self.connection = (
+            ThreadSafeDatabase
+            .get_thread_connection()
+        )
+
+        self.cursor = (
+            ThreadSafeDatabase
+            .get_thread_cursor()
+        )
 
     # =========================
     # CREATE
@@ -28,7 +39,7 @@ class ComicRepository:
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """
 
-        self.db.cursor.execute(
+        self.cursor.execute(
             query,
             (
                 comic.comic_id,
@@ -43,7 +54,7 @@ class ComicRepository:
             )
         )
 
-        self.db.connection.commit()
+        self.connection.commit()
 
     # =========================
     # READ ALL
@@ -52,9 +63,9 @@ class ComicRepository:
 
         query = "SELECT * FROM comics"
 
-        self.db.cursor.execute(query)
+        self.cursor.execute(query)
 
-        rows = self.db.cursor.fetchall()
+        rows = self.cursor.fetchall()
 
         comics = []
 
@@ -86,9 +97,9 @@ class ComicRepository:
             WHERE comic_id = ?
         """
 
-        self.db.cursor.execute(query, (comic_id,))
+        self.cursor.execute(query, (comic_id,))
 
-        row = self.db.cursor.fetchone()
+        row = self.cursor.fetchone()
 
         if row:
 
@@ -124,7 +135,7 @@ class ComicRepository:
             WHERE comic_id = ?
         """
 
-        self.db.cursor.execute(
+        self.cursor.execute(
             query,
             (
                 comic.title,
@@ -138,7 +149,7 @@ class ComicRepository:
             )
         )
 
-        self.db.connection.commit()
+        self.connection.commit()
 
     # =========================
     # DELETE
@@ -150,9 +161,12 @@ class ComicRepository:
             WHERE comic_id = ?
         """
 
-        self.db.cursor.execute(query, (comic_id,))
+        self.cursor.execute(
+            query,
+            (comic_id,)
+        )
 
-        self.db.connection.commit()
+        self.connection.commit()
 
     # =========================
     # SEARCH
@@ -164,12 +178,12 @@ class ComicRepository:
             WHERE title LIKE ?
         """
 
-        self.db.cursor.execute(
+        self.cursor.execute(
             query,
             (f"%{keyword}%",)
         )
 
-        rows = self.db.cursor.fetchall()
+        rows = self.cursor.fetchall()
 
         comics = []
 
@@ -206,9 +220,9 @@ class ComicRepository:
             WHERE comic_id = ?
         """
 
-        self.db.cursor.execute(
+        self.cursor.execute(
             query,
             (status, comic_id)
         )
 
-        self.db.connection.commit()
+        self.connection.commit()

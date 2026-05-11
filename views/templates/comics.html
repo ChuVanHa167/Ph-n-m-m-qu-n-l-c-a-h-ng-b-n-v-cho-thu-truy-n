@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Quản lý truyện</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>📚 QUẢN LÝ TRUYỆN</h1>
+
+    <!-- SEARCH -->
+
+    <form method="GET" action="/comics">
+
+        <input
+            type="text"
+            name="keyword"
+            placeholder="Tìm theo tên truyện..."
+        >
+
+        <button type="submit">
+            Tìm kiếm
+        </button>
+
+    </form>
+
+    <hr>
+
+    <!-- FORM -->
+
+    <form
+        method="POST"
+        id="comicForm"
+    >
+
+        <input
+            type="text"
+            name="comic_id"
+            id="comic_id"
+            value="{{ next_id }}"
+            readonly
+        >
+
+        <input
+            type="text"
+            name="title"
+            id="title"
+            placeholder="Tên truyện"
+            required
+        >
+
+        <input
+            type="text"
+            name="author"
+            id="author"
+            placeholder="Tác giả"
+        >
+
+        <input
+            type="text"
+            name="genre"
+            id="genre"
+            placeholder="Thể loại"
+        >
+
+        <input
+            type="number"
+            step="0.1"
+            name="price"
+            id="price"
+            placeholder="Giá bán"
+            required
+        >
+
+        <input
+            type="number"
+            step="0.1"
+            name="rental_price"
+            id="rental_price"
+            placeholder="Giá thuê"
+            required
+        >
+
+        <input
+            type="number"
+            name="quantity"
+            id="quantity"
+            placeholder="Số lượng kệ"
+            required
+        >
+
+        <input
+            type="number"
+            name="stock_quantity"
+            id="stock_quantity"
+            placeholder="Kho"
+            required
+        >
+
+        <button
+            type="submit"
+            formaction="/comics/add"
+        >
+            ➕ Thêm
+        </button>
+
+        <button
+            type="submit"
+            formaction="/comics/update"
+        >
+            ✏️ Sửa
+        </button>
+
+    </form>
+
+    <hr>
+
+    <!-- TABLE -->
+
+    <table id="comicTable">
+
+        <thead>
+
+        <tr>
+
+            <th>ID</th>
+            <th>Tên</th>
+            <th>Tác giả</th>
+            <th>Thể loại</th>
+            <th>Giá bán</th>
+            <th>Giá thuê</th>
+            <th>Kệ</th>
+            <th>Kho</th>
+            <th>Xóa</th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for comic in comics %}
+
+        <tr
+            onclick="fillForm(
+                '{{ comic.comic_id }}',
+                '{{ comic.title }}',
+                '{{ comic.author }}',
+                '{{ comic.genre }}',
+                '{{ comic.price }}',
+                '{{ comic.rental_price }}',
+                '{{ comic.quantity }}',
+                '{{ comic.stock_quantity }}'
+            )"
+        >
+
+            <td>{{ comic.comic_id }}</td>
+
+            <td>{{ comic.title }}</td>
+
+            <td>{{ comic.author }}</td>
+
+            <td>{{ comic.genre }}</td>
+
+            <td>{{ comic.price }}</td>
+
+            <td>{{ comic.rental_price }}</td>
+
+            <td>{{ comic.quantity }}</td>
+
+            <td>{{ comic.stock_quantity }}</td>
+
+            <td>
+
+                <a
+                    href="/comics/delete/{{ comic.comic_id }}"
+                    class="delete-btn"
+                >
+                    Xóa
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<script>
+
+function fillForm(
+    id,
+    title,
+    author,
+    genre,
+    price,
+    rental_price,
+    quantity,
+    stock_quantity
+){
+
+    document.getElementById(
+        "comic_id"
+    ).value = id
+
+    document.getElementById(
+        "title"
+    ).value = title
+
+    document.getElementById(
+        "author"
+    ).value = author
+
+    document.getElementById(
+        "genre"
+    ).value = genre
+
+    document.getElementById(
+        "price"
+    ).value = price
+
+    document.getElementById(
+        "rental_price"
+    ).value = rental_price
+
+    document.getElementById(
+        "quantity"
+    ).value = quantity
+
+    document.getElementById(
+        "stock_quantity"
+    ).value = stock_quantity
+}
+
+</script>
+
+</body>
+</html>
+
+{% endblock %}

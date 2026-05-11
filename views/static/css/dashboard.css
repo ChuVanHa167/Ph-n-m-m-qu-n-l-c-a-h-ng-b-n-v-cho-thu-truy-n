@@ -1,0 +1,26 @@
+.card-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 20px;
+}
+
+.card {
+
+    background: white;
+
+    padding: 30px;
+
+    border-radius: 15px;
+
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+
+    transition: 0.3s;
+}
+
+.card:hover {
+
+    transform: translateY(-5px);
+}

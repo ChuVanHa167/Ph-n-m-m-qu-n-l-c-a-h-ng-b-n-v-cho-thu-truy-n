@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>📚 Thuê truyện</h1>
+</div>
+
+<div class="card">
+
+    <form
+        action="/rentals/add"
+        method="POST"
+    >
+
+        <div class="grid-2">
+
+            <input
+                type="text"
+                name="customer_id"
+                placeholder="ID khách hàng"
+                required
+            >
+
+            <input
+                type="text"
+                name="comic_id"
+                placeholder="ID truyện"
+                required
+            >
+
+        </div>
+
+        <div class="button-group">
+
+            <button
+                class="btn btn-add"
+            >
+                📖 Thuê truyện
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+<div class="card">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Rental ID</th>
+                <th>Khách hàng</th>
+                <th>Truyện</th>
+                <th>Ngày thuê</th>
+                <th>Trạng thái</th>
+                <th>Giá</th>
+                <th>Hành động</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for rental in rentals %}
+
+            <tr>
+
+                <td>{{ rental.rental_id }}</td>
+                <td>{{ rental.customer_id }}</td>
+                <td>{{ rental.comic_id }}</td>
+                <td>{{ rental.rental_date }}</td>
+                <td>{{ rental.status }}</td>
+                <td>{{ rental.total_price }}</td>
+
+                <td>
+
+                    {% if rental.status == "ĐANG_THUE" %}
+
+                    <a
+                        href="/rentals/return/{{ rental.rental_id }}"
+                        class="btn-small"
+                    >
+                        Trả truyện
+                    </a>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

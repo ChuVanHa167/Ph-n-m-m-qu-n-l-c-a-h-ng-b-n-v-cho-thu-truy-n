@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>👤 Quản lý khách hàng</h1>
+</div>
+
+<div class="card">
+
+    <form
+        action="/customers/add"
+        method="POST"
+        id="customerForm"
+    >
+
+        <div class="grid-2">
+
+            <input
+                type="text"
+                name="customer_id"
+                id="customer_id"
+                placeholder="ID khách"
+                readonly
+            >
+
+            <input
+                type="text"
+                name="name"
+                id="name"
+                placeholder="Tên khách hàng"
+                required
+            >
+
+            <input
+                type="text"
+                name="phone"
+                id="phone"
+                placeholder="Số điện thoại"
+            >
+
+            <input
+                type="email"
+                name="email"
+                id="email"
+                placeholder="Email"
+            >
+
+        </div>
+
+        <textarea
+            name="address"
+            id="address"
+            placeholder="Địa chỉ"
+            class="textarea"
+        ></textarea>
+
+        <div class="button-group">
+
+            <button
+                type="submit"
+                class="btn btn-add"
+            >
+                ➕ Thêm khách
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-update"
+                onclick="updateCustomer()"
+            >
+                ✏️ Sửa
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-delete"
+                onclick="deleteCustomer()"
+            >
+                🗑 Xóa
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+<div class="card">
+
+    <form
+        method="GET"
+        action="/customers"
+        class="search-box"
+    >
+
+        <input
+            type="text"
+            name="keyword"
+            placeholder="Tìm theo tên khách..."
+        >
+
+        <button class="btn btn-search">
+            🔍 Tìm kiếm
+        </button>
+
+    </form>
+
+</div>
+
+<div class="card">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>ID</th>
+                <th>Tên</th>
+                <th>SĐT</th>
+                <th>Email</th>
+                <th>Địa chỉ</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for customer in customers %}
+
+            <tr
+                onclick="selectCustomer(
+                    '{{ customer.customer_id }}',
+                    '{{ customer.name }}',
+                    '{{ customer.phone }}',
+                    '{{ customer.email }}',
+                    '{{ customer.address }}'
+                )"
+            >
+
+                <td>{{ customer.customer_id }}</td>
+                <td>{{ customer.name }}</td>
+                <td>{{ customer.phone }}</td>
+                <td>{{ customer.email }}</td>
+                <td>{{ customer.address }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<script>
+
+function selectCustomer(
+    id,
+    name,
+    phone,
+    email,
+    address
+){
+
+    document.getElementById(
+        "customer_id"
+    ).value = id
+
+    document.getElementById(
+        "name"
+    ).value = name
+
+    document.getElementById(
+        "phone"
+    ).value = phone
+
+    document.getElementById(
+        "email"
+    ).value = email
+
+    document.getElementById(
+        "address"
+    ).value = address
+}
+
+function updateCustomer(){
+
+    const form = document.getElementById(
+        "customerForm"
+    )
+
+    form.action = "/customers/update"
+
+    form.submit()
+}
+
+function deleteCustomer(){
+
+    const customerId =
+        document.getElementById(
+            "customer_id"
+        ).value
+
+    if(!customerId){
+
+        alert(
+            "Vui lòng chọn khách hàng"
+        )
+
+        return
+    }
+
+    window.location.href =
+        "/customers/delete/" + customerId
+}
+
+</script>
+
+{% endblock %}

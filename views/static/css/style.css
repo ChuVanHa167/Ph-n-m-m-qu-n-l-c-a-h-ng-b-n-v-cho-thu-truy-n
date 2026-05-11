@@ -1,0 +1,160 @@
+body {
+
+    margin: 0;
+
+    font-family: Arial;
+
+    background: #f4f6f9;
+}
+
+.sidebar {
+
+    width: 250px;
+
+    height: 100vh;
+
+    background: #1f2937;
+
+    position: fixed;
+
+    left: 0;
+
+    top: 0;
+
+    padding: 20px;
+
+    box-sizing: border-box;
+}
+
+.sidebar h2 {
+
+    color: white;
+
+    margin-bottom: 30px;
+}
+
+.sidebar a {
+
+    display: block;
+
+    color: white;
+
+    text-decoration: none;
+
+    padding: 12px;
+
+    border-radius: 10px;
+
+    margin-bottom: 10px;
+
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+
+    background: #374151;
+}
+
+.main-content {
+
+    margin-left: 270px;
+
+    padding: 30px;
+}
+
+h1 {
+
+    margin-bottom: 20px;
+}
+
+body {
+
+    font-family: Arial;
+
+    background: #f4f6f9;
+
+    margin: 0;
+}
+
+.container {
+
+    width: 95%;
+
+    margin: auto;
+
+    padding: 20px;
+}
+
+h1 {
+
+    color: #222;
+}
+
+form {
+
+    margin-bottom: 20px;
+}
+
+input {
+
+    padding: 10px;
+
+    margin: 5px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 8px;
+}
+
+button {
+
+    padding: 10px 16px;
+
+    border: none;
+
+    background: #2563eb;
+
+    color: white;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+}
+
+button:hover {
+
+    background: #1d4ed8;
+}
+
+table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    background: white;
+}
+
+table th,
+table td {
+
+    padding: 12px;
+
+    border-bottom: 1px solid #ddd;
+
+    text-align: left;
+}
+
+table tr:hover {
+
+    background: #f1f5f9;
+}
+
+.delete-btn {
+
+    color: red;
+
+    text-decoration: none;
+
+    font-weight: bold;
+}

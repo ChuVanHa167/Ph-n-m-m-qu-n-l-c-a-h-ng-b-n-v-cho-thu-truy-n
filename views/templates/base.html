@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Comic Store</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/table.css') }}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/dashboard.css') }}"
+    >
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <h2>📚 COMIC STORE</h2>
+
+    <a href="/">Dashboard</a>
+
+    <a href="/comics">
+        Quản lý truyện
+    </a>
+
+    <a href="/customers">
+        Khách hàng
+    </a>
+
+    <a href="/inventory">
+        Kho
+    </a>
+
+    <a href="/rentals">
+        Thuê truyện
+    </a>
+
+    <a href="/sales">
+        Bán truyện
+    </a>
+
+</div>
+
+<div class="main-content">
+
+    {% block content %}
+    {% endblock %}
+
+</div>
+
+<script
+    src="{{ url_for('static', filename='js/app.js') }}"
+></script>
+
+</body>
+</html>

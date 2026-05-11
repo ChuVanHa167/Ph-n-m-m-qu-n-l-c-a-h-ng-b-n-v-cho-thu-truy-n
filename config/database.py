@@ -1,5 +1,26 @@
 import sqlite3
+import threading
 
+class DatabaseConnectionFactory:
+    """
+    Factory tạo SQLite connection an toàn cho Flask thread
+    """
+
+    @staticmethod
+    def create_connection():
+
+        connection = sqlite3.connect(
+            "database/comic_store.db",
+            check_same_thread=False
+        )
+
+        connection.row_factory = sqlite3.Row
+
+        connection.execute(
+            "PRAGMA foreign_keys = ON"
+        )
+
+        return connection
 
 class Database:
     """
@@ -14,15 +35,20 @@ class Database:
 
             cls._instance = super(Database, cls).__new__(cls)
 
-            cls._instance.connection = sqlite3.connect(
-                "database/comic_store.db"
+            # cls._instance.connection = sqlite3.connect(
+            #     "database/comic_store.db"
+            # )
+
+            cls._instance.connection = (
+                DatabaseConnectionFactory
+                .create_connection()
             )
 
             # Cho phép lấy dữ liệu dạng dictionary
-            cls._instance.connection.row_factory = (
-                sqlite3.Row
-            )
-            cls._instance.connection.execute("PRAGMA foreign_keys = ON")
+            # cls._instance.connection.row_factory = (
+            #     sqlite3.Row
+            # )
+            # cls._instance.connection.execute("PRAGMA foreign_keys = ON")
             cls._instance.cursor = (
                 cls._instance.connection.cursor()
             )
@@ -183,3 +209,34 @@ class Database:
         """
 
         self.connection.close()
+
+class ThreadSafeDatabase(Database):
+    """
+    Database hỗ trợ Flask multi-thread
+    """
+
+    _thread_local = threading.local()
+
+    @classmethod
+    def get_thread_connection(cls):
+
+        if not hasattr(
+            cls._thread_local,
+            "connection"
+        ):
+
+            cls._thread_local.connection = (
+                DatabaseConnectionFactory
+                .create_connection()
+            )
+
+        return cls._thread_local.connection
+
+    @classmethod
+    def get_thread_cursor(cls):
+
+        connection = (
+            cls.get_thread_connection()
+        )
+
+        return connection.cursor()

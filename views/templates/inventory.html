@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>📦 Quản lý kho</h1>
+</div>
+
+<div class="card">
+
+    <form
+        method="POST"
+        id="inventoryForm"
+    >
+
+        <div class="grid-2">
+
+            <input
+                type="text"
+                name="comic_id"
+                id="comic_id"
+                placeholder="ID truyện"
+                required
+            >
+
+            <input
+                type="number"
+                name="quantity"
+                id="quantity"
+                placeholder="Số lượng"
+                required
+            >
+
+        </div>
+
+        <div class="button-group">
+
+            <button type="button"
+                    class="btn btn-add"
+                    onclick="submitInventory('/inventory/import')">
+                ➕ Nhập kho
+            </button>
+
+            <button type="button"
+                    class="btn btn-delete"
+                    onclick="submitInventory('/inventory/export')">
+                📤 Xuất kho
+            </button>
+
+            <button type="button"
+                    class="btn btn-update"
+                    onclick="submitInventory('/inventory/move')">
+                🚚 Chuyển ra kệ
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+<div class="card">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Log ID</th>
+                <th>Comic ID</th>
+                <th>Hành động</th>
+                <th>Số lượng</th>
+                <th>Ghi chú</th>
+                <th>Thời gian</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for log in logs %}
+
+            <tr>
+
+                <td>{{ log.log_id }}</td>
+                <td>{{ log.comic_id }}</td>
+                <td>{{ log.action_type }}</td>
+                <td>{{ log.quantity }}</td>
+                <td>{{ log.note }}</td>
+                <td>{{ log.created_at }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<script>
+
+function submitInventory(action){
+
+    const form =
+        document.getElementById("inventoryForm")
+
+    const comicId =
+        document.getElementById("comic_id").value
+
+    const quantity =
+        document.getElementById("quantity").value
+
+    if(!comicId || !quantity){
+
+        alert("Vui lòng nhập đủ thông tin")
+
+        return
+    }
+
+    form.action = action
+    form.method = "POST"
+    form.submit()
+}
+
+</script>
+
+{% endblock %}

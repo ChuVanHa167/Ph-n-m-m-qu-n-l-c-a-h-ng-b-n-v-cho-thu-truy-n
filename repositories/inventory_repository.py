@@ -1,11 +1,22 @@
-from config.database import Database
+from config.database import (
+    ThreadSafeDatabase
+)
 
 
 class InventoryRepository:
 
     def __init__(self):
 
-        self.db = Database()
+        # self.db = Database()
+        self.connection = (
+            ThreadSafeDatabase
+            .get_thread_connection()
+        )
+
+        self.cursor = (
+            ThreadSafeDatabase
+            .get_thread_cursor()
+        )
 
     # =========================
     # NHẬP KHO
@@ -23,12 +34,12 @@ class InventoryRepository:
             WHERE comic_id = ?
         """
 
-        self.db.cursor.execute(
+        self.cursor.execute(
             query,
             (quantity, comic_id)
         )
 
-        self.db.connection.commit()
+        self.connection.commit()
 
     # =========================
     # XUẤT KHO
@@ -46,12 +57,12 @@ class InventoryRepository:
             WHERE comic_id = ?
         """
 
-        self.db.cursor.execute(
+        self.cursor.execute(
             query,
             (quantity, comic_id)
         )
 
-        self.db.connection.commit()
+        self.connection.commit()
 
     # =========================
     # CHUYỂN TỪ KHO RA KỆ
@@ -74,7 +85,7 @@ class InventoryRepository:
             WHERE comic_id = ?
         """
 
-        self.db.cursor.execute(
+        self.cursor.execute(
             query,
             (
                 quantity,
@@ -83,7 +94,7 @@ class InventoryRepository:
             )
         )
 
-        self.db.connection.commit()
+        self.connection.commit()
 
     # =========================
     # LOG KHO
@@ -106,7 +117,7 @@ class InventoryRepository:
             VALUES (?, ?, ?, ?)
         """
 
-        self.db.cursor.execute(
+        self.cursor.execute(
             query,
             (
                 comic_id,
@@ -116,7 +127,7 @@ class InventoryRepository:
             )
         )
 
-        self.db.connection.commit()
+        self.connection.commit()
 
     # =========================
     # XEM LOG
@@ -128,6 +139,6 @@ class InventoryRepository:
             ORDER BY created_at DESC
         """
 
-        self.db.cursor.execute(query)
+        self.cursor.execute(query)
 
-        return self.db.cursor.fetchall()
+        return self.cursor.fetchall()
