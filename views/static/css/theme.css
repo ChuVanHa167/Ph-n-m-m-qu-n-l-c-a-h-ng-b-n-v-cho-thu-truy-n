@@ -8,6 +8,7 @@
 
     --text: #111;
     --muted: #6b7280;
+    --sidebar-width: 250px;
 }
 
 /* ===== RESET ===== */
@@ -20,17 +21,11 @@ body {
 
 /* ===== LAYOUT ===== */
 .main-content {
-    
+    margin-left: 160px;
     padding: 30px;
-    margin-left: 350px;
+    padding-left: 40px;
 }
-.with-sidebar {
-    margin-left: 250px; /* đúng width sidebar */
-}
-.dashboard-layout {
-    margin-left: 50px;
-    padding: 20px;
-}
+
 /* ===== SIDEBAR ===== */
 .sidebar {
     width: 250px;
@@ -40,6 +35,26 @@ body {
     top: 0;
     left: 0;
     padding: 20px;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+
+/* MAIN CONTENT - FIX CHÍNH */
+.main-content {
+    margin-left: var(--sidebar-width);
+    padding: 30px;
+    padding-left: 80px; /* 👈 tạo khoảng đệm đẹp hơn */
+    transition: 0.3s;
+    margin-left: 70px;
+    
 }
 
 .sidebar a {

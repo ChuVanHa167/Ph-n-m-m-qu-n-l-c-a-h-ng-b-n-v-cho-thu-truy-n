@@ -103,3 +103,26 @@ class SaleRepository:
             return 0
 
         return row["revenue"]
+    
+    def get_monthly_revenue(self):
+
+        query = """
+            SELECT 
+                strftime('%Y-%m', sale_date) as month,
+                SUM(total_price) as revenue
+            FROM sales
+            GROUP BY month
+            ORDER BY month ASC
+        """
+
+        self.cursor.execute(query)
+        rows = self.cursor.fetchall()
+
+        result = []
+        for row in rows:
+            result.append({
+                "month": row["month"],
+                "revenue": row["revenue"]
+            })
+
+        return result

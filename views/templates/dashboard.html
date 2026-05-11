@@ -2,30 +2,82 @@
 
 {% block content %}
 
-<h1>DASHBOARD QUẢN LÝ</h1>
+<div class="main-content dashboard-layout">
 
-<div class="card-grid">
+    <h1 class="title">📊 Dashboard Tổng Quan</h1>
 
-    <div class="card">
-        <h2>📚 Truyện</h2>
-        <p>Quản lý toàn bộ truyện</p>
+    <!-- KPI CARDS -->
+    <div class="grid grid-3">
+
+        <div class="card clickable" onclick="location.href='/sales'">
+            <h3>💰 Doanh thu</h3>
+            <p class="big">{{ total_revenue }} VNĐ</p>
+        </div>
+
+        <div class="card clickable" onclick="location.href='/comics'">
+            <h3>📚 Truyện</h3>
+            <p class="big">{{ total_comics }}</p>
+        </div>
+
+        <div class="card clickable" onclick="location.href='/customers'">
+            <h3>👤 Khách hàng</h3>
+            <p class="big">{{ total_customers }}</p>
+        </div>
+
     </div>
 
-    <div class="card">
-        <h2>👤 Khách hàng</h2>
-        <p>Quản lý khách hàng</p>
+    <!-- LINE CHART -->
+    <div class="card chart-box">
+        <h2>📈 Doanh thu theo tháng</h2>
+        <canvas id="revenueChart"></canvas>
     </div>
 
-    <div class="card">
-        <h2>📦 Kho</h2>
-        <p>Quản lý kho truyện</p>
-    </div>
-
-    <div class="card">
-        <h2>💰 Doanh thu</h2>
-        <p>Theo dõi bán hàng</p>
+    <!-- DOUGHNUT -->
+    <div class="card chart-box">
+        <h2>📊 Tỷ lệ hệ thống</h2>
+        <canvas id="ratioChart"></canvas>
     </div>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const labels = JSON.parse('{{ chart_labels | tojson | safe }}');
+const values = JSON.parse('{{ chart_values | tojson | safe }}');
+
+new Chart(document.getElementById('revenueChart'), {
+    type: 'line',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: 'Doanh thu',
+            data: values,
+            borderColor: '#e53935',
+            backgroundColor: 'rgba(229,57,53,0.1)',
+            tension: 0.4
+        }]
+    }
+});
+
+const ratio = JSON.parse('{{ ratio_data | tojson | safe }}');
+
+new Chart(document.getElementById('ratioChart'), {
+    type: 'doughnut',
+    data: {
+        labels: ['Truyện', 'Khách hàng', 'Doanh thu'],
+        datasets: [{
+            data: [
+                ratio.comics,
+                ratio.customers,
+                ratio.revenue / 1000000
+            ],
+            backgroundColor: ['#e53935', '#111827', '#ffffff']
+        }]
+    }
+});
+
+</script>
 
 {% endblock %}
